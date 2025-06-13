@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>吹き出し画像セリフメーカー</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      background: #f0f0f0;
+      text-align: center;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+
+    #controls {
+      margin-bottom: 20px;
+    }
+
+    #bubble-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 400px;
+      height: 300px;
+    }
+
+    #bubble-img {
+      width: 100%;
+      height: 100%;
+    }
+
+    #text-overlay {
+      position: absolute;
+      top: 25%;
+      left: 10%;
+      width: 80%;
+      height: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      word-break: break-word;
+      font-size: 24px;
+      color: black;
+      font-family: sans-serif;
+      line-height: 1.4;
+      pointer-events: none;
+      flex-direction: column;
+    }
+
+    .button-group {
+      margin: 10px auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .button-group button {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>吹き出し画像セリフメーカー</h1>
+
+  <div id="controls">
+    <textarea id="text" rows="3" cols="30" placeholder="セリフを入力"></textarea><br><br>
+
+    <label>フォントサイズ:
+      <input type="range" id="fontSize" min="16" max="60" value="24">
+    </label>
+
+    <label>フォント:
+      <select id="fontFamily">
+        <option value="sans-serif">標準</option>
+        <option value="serif">明朝体</option>
+        <option value="Comic Sans MS">ポップ</option>
+        <option value="Impact">ホラー</option>
+      </select>
+    </label>
+
+    <label>文字色:
+      <input type="color" id="fontColor" value="#000000">
+    </label>
+
+    <br><br>
+
+    <div class="button-group">
+      <button onclick="setBubble(1)">1</button>
+      <button onclick="setBubble(2)">2</button>
+      <button onclick="setBubble(3)">3</button>
+      <button onclick="setBubble(4)">4</button>
+      <button onclick="setBubble(5)">5</button>
+      <button onclick="setBubble(6)">6</button>
+      <button onclick="setBubble(7)">7</button>
+      <button onclick="setBubble(8)">8</button>
+      <button onclick="setBubble(9)">9</button>
+      <button onclick="setBubble(10)">10</button>
+      <button onclick="setBubble(11)">11</button>
+      <button onclick="setBubble(12)">12</button>
+    </div>
+
+    <br>
+    <button onclick="saveImage()">透過PNGで保存</button>
+  </div>
+
+  <div id="bubble-wrapper">
+    <img id="bubble-img" src="1.png" alt="吹き出し">
+    <div id="text-overlay">ここにセリフが入ります</div>
+  </div>
+
+  <script>
+    const textInput = document.getElementById("text");
+    const fontSizeInput = document.getElementById("fontSize");
+    const fontFamilyInput = document.getElementById("fontFamily");
+    const fontColorInput = document.getElementById("fontColor");
+    const textOverlay = document.getElementById("text-overlay");
+    const bubbleImg = document.getElementById("bubble-img");
+
+    function updateText() {
+      const rawText = textInput.value || "ここにセリフが入ります";
+      const htmlText = rawText.replace(/\n/g, "<br>");
+      textOverlay.innerHTML = htmlText;
+      textOverlay.style.fontSize = fontSizeInput.value + "px";
+      textOverlay.style.fontFamily = fontFamilyInput.value;
+      textOverlay.style.color = fontColorInput.value;
+    }
+
+    function setBubble(number) {
+      bubbleImg.src = number + ".png";
+    }
+
+    function saveImage() {
+      html2canvas(document.getElementById("bubble-wrapper"), {
+        backgroundColor: null
+      }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "fukidashi.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+
+    textInput.addEventListener("input", updateText);
+    fontSizeInput.addEventListener("input", updateText);
+    fontFamilyInput.addEventListener("change", updateText);
+    fontColorInput.addEventListener("input", updateText);
+
+    updateText(); // 初期表示
+  </script>
+</body>
+</html>
